@@ -1,0 +1,11 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: eighthorse-tea-backend
+    ports:
+      - "8000:8000"
+    environment:
+      APP_ENV: local
+    restart: unless-stopped
