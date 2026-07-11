@@ -25,7 +25,7 @@ from fastapi.responses import JSONResponse
 
 from app import data_loader  # noqa: F401  启动时加载 seed
 from app import responses
-from app.routers import assets, expressions, fallback, teas, trace
+from app.routers import assets, debug, expressions, fallback, teas, trace
 
 app = FastAPI(
     title="中国茶 AI 表达 Demo",
@@ -33,7 +33,7 @@ app = FastAPI(
         "中国茶感知与文化表达的分层翻译系统 Demo。"
         "主路径：1 款茶（铁观音）× 图片物料 ×（国内链 + 跨文化链）两条同构链路。"
     ),
-    version="0.2.0",
+    version="0.3.0",
 )
 
 # Demo 阶段放开 CORS，方便前端本地联调；上线前应收紧 origins。
@@ -74,8 +74,16 @@ def health():
 @app.on_event("startup")
 def _load_seeds_on_startup() -> None:
     """启动时预热 seed registry（data_loader 已 lru_cache，这里主动触发一次，
-    便于在启动日志中确认 seed 加载正常，而非在首个请求时才暴露加载错误）。"""
+    便于在启动日志中确认 seed 加载正常，而非在首个请求时才暴露加载错误）。
+    同时打印一次 LLM 启用状态，方便确认是否已接 LLM（不输出 key）。"""
     data_loader.all_seeds()
+    from app.config import get_settings
+
+    s = get_settings()
+    if s.llm_enabled:
+        print(f"[startup] LLM 已启用：model={s.llm_model} timeout={s.llm_timeout}")
+    else:
+        print("[startup] LLM 未启用（未配置 LLM_API_KEY / LLM_BASE_URL），生成接口走 mock 兜底")
 
 
 @app.exception_handler(RequestValidationError)
@@ -101,6 +109,7 @@ app.include_router(teas.router)
 app.include_router(expressions.router)
 app.include_router(assets.router)
 app.include_router(trace.router)
+app.include_router(debug.router)  # /api/health-llm（调试用，非 P0 契约）
 app.include_router(fallback.router)  # 含 P1/P2 占位 + /api/* 全局 catch-all
 
 

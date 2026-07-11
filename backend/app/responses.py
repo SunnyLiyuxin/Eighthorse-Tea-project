@@ -8,7 +8,13 @@ from typing import Any
 
 
 def success(data: Any, *, fallback: bool = False, **extra_meta) -> dict:
-    """成功响应。extra_meta 里的键会合并进 meta（如 image_generation_enabled）。"""
+    """成功响应。extra_meta 里的键会合并进 meta（如 image_generation_enabled、
+    llm_generated、used_rule_ids 等）。
+
+    注意：LLM→seed 降级不应置 fallback=True（那会被归为"功能未开放"，
+    误导前端）。降级用 meta.llm_generated=False + llm_fallback_reason 表示，
+    仍走本函数且 fallback=False。
+    """
     meta: dict[str, Any] = {"demo_mode": True, "fallback": fallback}
     if fallback:
         meta["fallback_reason"] = "feature_not_available"
