@@ -150,6 +150,7 @@ def catch_all_api(path: str, request: Request):
     """
     normalized = path.rstrip("/")
     target = f"/api/{normalized}"
+    # 第一遍：找 path 匹配且支持当前方法的已注册路由 → 302 重定向到无尾斜杠规范形式
     for registered, methods in _registered_routes(request.app):
         if registered == _CATCH_ALL_PATTERN:
             continue  # 跳过 catch-all 自身，避免真未知路由自匹配重定向死循环
@@ -157,6 +158,20 @@ def catch_all_api(path: str, request: Request):
             continue  # 方法不匹配：重定向保持原方法，会死循环，不重定向
         if _compile_route(registered).match(target):
             return RedirectResponse(url=target, status_code=302)
+
+    # 第二遍：path 匹配但方法不支持 → 该路由存在，只是请求方法错了
+    # （如 GET 命中一条 POST-only 路由）。给出方法提示，而非"接口未实现"的误导。
+    for registered, methods in _registered_routes(request.app):
+        if registered == _CATCH_ALL_PATTERN:
+            continue
+        if _compile_route(registered).match(target):
+            allowed = "/".join(sorted(methods))
+            return responses.fallback_response(
+                title="请求方法不匹配",
+                message=f"该接口需用 {allowed} 访问，当前为 {request.method.upper()}。",
+                suggested_action="可在 Swagger 调试：/docs",
+                fallback_reason="method_not_allowed",
+            )
 
     return responses.fallback_response(
         title="接口暂未开放",
