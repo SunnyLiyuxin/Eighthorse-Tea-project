@@ -14,7 +14,7 @@ def create_domestic_expression(tea_id: str, body: DomesticExpressionRequest):
     """生成国内中文表达。
 
     国内表达是跨文化表达横向翻译的源文，属 Demo 主路径，必须预置。
-    阶段二：启用 LLM 时由规则约束生成；未启用 / 失败时退回 seed 预置表达。
+    启用 LLM 时由规则约束生成；未启用 / 失败时退回 seed 预置表达。
     """
     expr, status, llm_meta = expression_service.get_domestic_expression(
         tea_id=tea_id,

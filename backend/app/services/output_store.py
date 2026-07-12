@@ -1,6 +1,6 @@
 """生成结果缓存与持久化（generated_outputs 表的读写）。
 
-阶段二写路径接库：LLM 启用时，三个生成接口在调 LLM 前先按 input_hash 查缓存，
+写路径接库：LLM 启用时，三个生成接口在调 LLM 前先按 input_hash 查缓存，
 命中即复用、跳过本次 LLM 调用；LLM 成功后把结果写回，供后续同输入命中。
 
 设计原则（DB 是 best-effort 加速器，不是硬依赖）：
@@ -12,7 +12,7 @@
   audience / style / market / 规则版本等全部决定输出的输入，输入一变哈希即变。
 - 仅 LLM 启用且即将调用 LLM 时才查缓存；LLM 未启用 / 调用失败 / 源文缺失都不碰库。
 - 运行时 engine 懒构造、只建 generated_outputs 一张表（不依赖 seed.py 是否跑过，
-  也不建其他表 —— 读路径仍走内存 data_loader）。
+  也不建其他表 —— 读路径由 data_loader 查 tea.db 的 seed 表，与此独立）。
 - 缓存对前端透明：cache hit 仍返回 LLM 生成内容（llm_generated=true），
   不新增响应字段，不改 §1.4 契约。
 """

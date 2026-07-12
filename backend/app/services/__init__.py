@@ -1,6 +1,6 @@
 """服务层（业务逻辑）：被 routers 调用，不碰 HTTP / JSON 响应格式。
 
-阶段一：数据来自 YAML seed 文件（经 data_loader 加载到内存 registry）。
-后续接 SQLite / LLM 时只改这里：data_loader 可由 seed.py 调用把数据灌进 DB，
-services 改为查 DB。
+数据来自 SQLite：data_loader getter 查 tea.db（seed.py --reset 灌表）；
+LLM 生成结果经 output_store 写入 generated_outputs 表缓存。services 只负责
+检索、筛选、组装和校验，不碰 YAML 加载细节。
 """

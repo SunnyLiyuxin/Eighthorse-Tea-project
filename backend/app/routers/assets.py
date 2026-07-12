@@ -17,7 +17,7 @@ def create_marketing_asset(tea_id: str, body: MarketingAssetRequest):
     language=zh → 国内物料（source_expression_id 指向国内表达）
     language=en → 跨文化物料（source_translation_id 指向跨文化表达）
 
-    阶段二：启用 LLM 时由规则约束生成 copy + image_prompt；雷达数值仍由 seed
+    启用 LLM 时由规则约束生成 copy + image_prompt；雷达数值仍由 seed
     事实提供，真图 / 真视频仍为 P2 fallback（image_generation_enabled=false）。
     """
     asset, status, llm_meta = asset_service.get_marketing_asset(

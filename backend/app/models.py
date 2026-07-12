@@ -1,6 +1,6 @@
 """SQLAlchemy ORM 模型：与 backend/data/seeds/*.yaml 一一对应。
 
-设计约定（阶段二最小运行时）：
+设计约定：
 - 嵌套结构（origin/process/story、dimensions 列表、outputs/analogy_rules、
   copy/visual_data）统一用 JSON 列，不为每个嵌套子结构建关系表。
 - 主键用 seed 里的可读字符串 id；tea_knowledge / flavor_profiles 没有 id
@@ -8,7 +8,7 @@
 - 字段不齐（如 shelf_life_months 仅部分茶有）一律 nullable=True，不在
   schema 层硬约束 —— seed 是事实源，表如实反映。
 - expressions / assets 单独建表（非塞进 generated_outputs），字段差异大、
-  便于测试断言。generated_outputs 仅建空表占位，预留给后续 LLM 生成结果。
+  便于测试断言。generated_outputs 存 LLM 生成结果缓存（output_store 写入）。
 - tea_terms 在 seed 里是 dict（tea_id → [term...]），展开成独立表行。
 - trace_links 如实反映 seed 的扁平 trace_nodes + parent 结构，不用边表。
 
@@ -208,7 +208,7 @@ class TeaTerm(Base):
 
 
 class GeneratedOutput(Base):
-    """占位表：预留给后续 LLM 生成结果持久化，最小运行时不灌数据。"""
+    """LLM 生成结果缓存表（output_store 写入，按 input_hash 去重复用）。"""
 
     __tablename__ = "generated_outputs"
 

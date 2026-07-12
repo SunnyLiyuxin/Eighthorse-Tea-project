@@ -1,9 +1,8 @@
 """数据访问层：从 SQLite 查询 seed 数据（读路径已切库）。
 
-阶段一：启动时把 data/seeds/*.yaml 读进内存 registry，getter 在内存扫描。
-阶段二写路径接库：generated_outputs 表作 LLM 输出缓存（output_store）。
-本步（读路径切库）：getter 改为查 backend/data/tea.db（由 seed.py --reset 灌表），
-内存 registry 仅保留给 seed.py 灌表时读 YAML 用，运行时不再走内存。
+getter 查 backend/data/tea.db（由 seed.py --reset 从 data/seeds/*.yaml 灌表）；
+generated_outputs 表作 LLM 输出缓存由 output_store 读写，与读路径独立。
+all_seeds()/_load() 仅保留给 seed.py 灌表时读 YAML 用，运行时 getter 不走内存。
 
 getter 签名与返回 shape 与内存版逐字段对齐（ORM 顶层字段 + JSON 列原样），
 所以 router / service / 测试无感。seed.py 仍用 all_seeds()/_load() 读 YAML 灌库。

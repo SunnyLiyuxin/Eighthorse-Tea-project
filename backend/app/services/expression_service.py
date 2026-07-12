@@ -3,9 +3,10 @@
 国内链与跨文化链地位对等。跨文化表达由国内表达按规则横向翻译派生，
 该关系通过 source_expression_id 记录，不进入纵向追溯链。
 
-阶段二：在规则约束下接入 LLM 做真生成；未启用 / 失败时透明退回
-seed 预置表达（mock_outputs.yaml），不白屏。LLM 只覆盖文本字段，
-ID / trace / source 字段全留 seed，纵向追溯链不断。
+在规则约束下接入 LLM 做真生成；未启用 / 失败时透明退回 seed 预置表达
+（mock_outputs.yaml），不白屏。LLM 只覆盖文本字段，ID / trace / source
+字段全留 seed，纵向追溯链不断。LLM 生成结果经 output_store 按 input_hash
+缓存进 generated_outputs 表，同输入命中即复用。
 
 seed 存储字段（id / expression_type / strategy_id）为内部字段，
 不进接口响应；响应字段名严格对齐 docs/接口文档.md（expression_id / translation_id）。
