@@ -9,8 +9,8 @@ LLM disabled（conftest autouse）→ 走 seed 兜底，llm_generated=false 且
 
 from tests.conftest import TEA_ID
 
-DOMESTIC_EXPR_ID = "expr_cn_tieguanyin_001"
-CROSS_EXPR_ID = "expr_en_tieguanyin_coffee_001"
+DOMESTIC_EXPR_ID = "expr_cn_szz_tgy_nx"
+CROSS_EXPR_ID = "expr_en_szz_tgy_nx_coffee"
 
 
 def test_domestic_expression_llm_disabled(client):
@@ -22,7 +22,7 @@ def test_domestic_expression_llm_disabled(client):
     for k in ("expression_id", "tea_id", "outputs", "source_profile_id", "trace_id"):
         assert k in d
     assert d["expression_id"] == DOMESTIC_EXPR_ID
-    assert d["source_profile_id"] == "flavor_tieguanyin_001"
+    assert d["source_profile_id"] == "flavor_szz_tgy_nx"
     # 国内表达是翻译源文，无源文
     assert d.get("source_expression_id") is None
     # outputs 三个 slot
@@ -57,7 +57,7 @@ def test_cross_cultural_expression(client):
     assert d["translation_id"] == CROSS_EXPR_ID
     # 横向翻译派生：source_expression_id 指向国内 seed（与实际翻译源文一致）
     assert d["source_expression_id"] == DOMESTIC_EXPR_ID
-    assert d["source_profile_id"] == "flavor_tieguanyin_001"
+    assert d["source_profile_id"] == "flavor_szz_tgy_nx"
     for k in ("literal_explanation", "beginner_analogy", "cultural_narrative"):
         assert isinstance(d["outputs"].get(k), str) and d["outputs"][k]
     assert isinstance(d.get("analogy_rules"), list)

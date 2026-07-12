@@ -4,35 +4,7 @@
 # 横向翻译关系（跨文化表达 ← 国内表达）用 source_expression_id 承载，不进本表
 
 trace_nodes:
-  # ========== 赛珍珠（旧ID）链 ==========
-  # 跨文化链
-  - id: asset_tieguanyin_poster_en_001
-    node_type: marketing_asset
-    level: 3
-    name: 多模态物料
-    summary: "面向欧美咖啡爱好者的英文图片物料"
-    parent: expr_en_tieguanyin_coffee_001
-  - id: expr_en_tieguanyin_coffee_001
-    node_type: expression
-    level: 2
-    name: 跨文化表达
-    summary: "用 specialty coffee 的 floral finish 降低理解门槛，同时保留 Guanyin Yun 的文化解释"
-    parent: flavor_tieguanyin_001
-  # 国内链
-  - id: asset_tieguanyin_poster_zh_001
-    node_type: marketing_asset
-    level: 3
-    name: 多模态物料
-    summary: "面向国内消费者的中文图片物料"
-    parent: expr_cn_tieguanyin_001
-  - id: expr_cn_tieguanyin_001
-    node_type: expression
-    level: 2
-    name: 国内表达
-    summary: "兰花香、清爽、尾韵较长"
-    parent: flavor_tieguanyin_001
-
-  # ========== 赛珍珠（新ID）链 ==========
+  # ========== 赛珍珠链 ==========
   # 跨文化链
   - id: asset_szz_poster_en
     node_type: marketing_asset
@@ -118,12 +90,6 @@ trace_nodes:
 
   # ========== 共享底层（共享知识/风味坐标） ==========
   # 风味坐标
-  - id: flavor_tieguanyin_001
-    node_type: flavor_profile
-    level: 1
-    name: 风味坐标
-    summary: "花香8，鲜爽度7，回甘与尾韵8，焙火感4"
-    parent: knowledge_tieguanyin_001
   - id: flavor_szz_tgy_nx
     node_type: flavor_profile
     level: 1
@@ -144,12 +110,6 @@ trace_nodes:
     parent: knowledge_dh_bt_jjm
 
   # 知识依据
-  - id: knowledge_tieguanyin_001
-    node_type: knowledge
-    level: 0
-    name: 知识依据
-    summary: "铁观音工艺、乌龙茶审评术语、公开文献代理数据"
-    parent: null
   - id: knowledge_szz_tgy_nx
     node_type: knowledge
     level: 0
@@ -172,7 +132,6 @@ trace_nodes:
 
 # 茶品术语：规则筛选时与 trigger_terms 取交集
 tea_terms:
-  tieguanyin_001: ["铁观音", "乌龙茶", "兰花香", "回甘", "观音韵", "清鲜", "韵", "三香", "炒米香"]
   BAMA_SZZ_TGY_NX: ["赛珍珠", "铁观音", "乌龙茶", "兰花香", "回甘", "观音韵", "音韵", "三香", "炒米香", "果甜香", "浓香型", "安溪"]
   BAMA_NY_WRT_DHP: ["牛一", "大红袍", "武夷岩茶", "岩茶", "乌龙茶", "焙火", "岩韵", "花果香", "回甘", "醇厚", "水蜜桃香", "正岩"]
   BAMA_DH_BT_JJM: ["鼎红", "金骏眉", "红茶", "武夷红茶", "花蜜香", "花果香", "甜润", "桐木关", "3D萃香", "芽型红茶"]

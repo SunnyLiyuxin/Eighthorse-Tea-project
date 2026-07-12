@@ -63,4 +63,4 @@ def client() -> Iterator[TestClient]:
 
 
 # 供测试复用
-TEA_ID = "tieguanyin_001"
+TEA_ID = "BAMA_SZZ_TGY_NX"

@@ -3,45 +3,7 @@
 # 跨文化表达 source_expression_id 指向国内表达（横向翻译派生，不进纵向链）
 
 expressions:
-  # ===== 赛珍珠铁观音（已有，保留） =====
-  - id: expr_cn_tieguanyin_001
-    tea_id: tieguanyin_001
-    expression_type: domestic
-    strategy_id: strategy_domestic_store_sales
-    audience:
-      age_group: gen_z
-      knowledge_level: beginner
-      scenario: self_drinking
-      psychology: curiosity
-    outputs:
-      story_style: "这款铁观音可以先从香气理解：它不是浓烈的香水感，而是入口后慢慢展开的兰花香。"
-      scientific_style: "它的鲜爽、回甘和花香来自品种、做青和焙火共同作用。Demo 阶段的成分说明采用公开文献代理数据。"
-      emotional_style: "适合在下午慢慢喝，第一口是清爽，后面留下的是比较柔和的花香和回甘。"
-    source_profile_id: flavor_tieguanyin_001
-    trace_id: expr_cn_tieguanyin_001
-    source_expression_id: null
-
-  - id: expr_en_tieguanyin_coffee_001
-    tea_id: tieguanyin_001
-    expression_type: cross_cultural
-    strategy_id: strategy_cross_cultural_coffee
-    target_language: en
-    market: western
-    audience_reference: specialty_coffee_lovers
-    outputs:
-      literal_explanation: "Guanyin Yun refers to the lingering impression Tieguanyin leaves after drinking, including aroma, aftertaste, and mouthfeel."
-      beginner_analogy: "For specialty coffee drinkers, think of it as a clean floral finish: not heavy, but memorable after the sip."
-      cultural_narrative: "In Chinese tea culture, Yun is not only flavor. It describes the rhythm and aftertaste that stay with the drinker."
-    analogy_rules:
-      - source_dimension: 花香
-        target_reference: "floral finish in washed coffee"
-        confidence: medium
-        note: "用于降低理解门槛，不等同于完全相同的风味物质"
-    source_profile_id: flavor_tieguanyin_001
-    source_expression_id: expr_cn_tieguanyin_001
-    trace_id: expr_en_tieguanyin_coffee_001
-
-  # ===== 赛珍珠（新ID）——国内表达 =====
+  # ===== 赛珍珠铁观音——国内表达 =====
   - id: expr_cn_szz_tgy_nx
     tea_id: BAMA_SZZ_TGY_NX
     expression_type: domestic
@@ -179,48 +141,7 @@ expressions:
 
 # ===== 物料层 =====
 assets:
-  # ===== 赛珍珠铁观音（已有，保留） =====
-  - id: asset_tieguanyin_poster_zh_001
-    tea_id: tieguanyin_001
-    asset_type: poster
-    platform: wechat
-    language: zh
-    copy:
-      headline: "一杯讲得清的铁观音"
-      subheadline: "兰花香、清爽鲜爽、回甘悠长"
-      body: "传统安溪铁观音，入口清爽，兰花香缓缓展开，饮后留香悠长。"
-    visual_data:
-      radar:
-        - { label: 花香, value: 8 }
-        - { label: 鲜爽度, value: 7 }
-        - { label: 回甘与尾韵, value: 8 }
-        - { label: 焙火感, value: 4 }
-    image_prompt: "面向国内消费者的铁观音海报，兰花、白瓷茶杯、清雅花韵氛围，现代排版。"
-    source_expression_id: expr_cn_tieguanyin_001
-    source_translation_id: null
-    trace_id: asset_tieguanyin_poster_zh_001
-
-  - id: asset_tieguanyin_poster_en_001
-    tea_id: tieguanyin_001
-    asset_type: poster
-    platform: tiktok
-    language: en
-    copy:
-      headline: "Tieguanyin, Explained Like Specialty Coffee"
-      subheadline: "Floral aroma, clean freshness, and a lingering finish."
-      body: "A Chinese oolong tea with a graceful floral profile and a finish that stays after the sip."
-    visual_data:
-      radar:
-        - { label: Floral, value: 8 }
-        - { label: Freshness, value: 7 }
-        - { label: "Lingering Finish", value: 8 }
-        - { label: "Roasted Note", value: 4 }
-    image_prompt: "Premium poster for Chinese Tieguanyin oolong tea, designed for Western specialty coffee lovers, elegant tea leaves, porcelain cup, clear floral mood, modern editorial layout."
-    source_expression_id: null
-    source_translation_id: expr_en_tieguanyin_coffee_001
-    trace_id: asset_tieguanyin_poster_en_001
-
-  # ===== 赛珍珠（新ID）物料 =====
+  # ===== 赛珍珠铁观音物料 =====
   - id: asset_szz_poster_zh
     tea_id: BAMA_SZZ_TGY_NX
     asset_type: poster

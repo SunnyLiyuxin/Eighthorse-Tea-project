@@ -35,7 +35,7 @@
 |---|---|---|
 | **LLM 为主 + mock 兜底**，不硬替换 | LLM 成功→用 LLM 输出；没 key / 网络 / 解析失败→透明退回 seed | 硬替换后没 key 或现场抽风会白屏，违反 CLAUDE.md "fallback 保证稳定交互"。mock 只在降级时亮起。 |
 | **LLM 只覆盖文本字段，ID/trace 骨架全留 seed** | 覆盖 `outputs` / `copy` / `image_prompt`；`expression_id` / `trace_id` / `source_profile_id` / `source_expression_id` 不动 | 纵向追溯链不断；`source_expression_id` 仍真实指向国内表达记录。 |
-| **跨文化翻译源文 = 国内 seed 的 outputs**，不是新生成的 LLM 国内表达 | `source_expression_id` 指向 `expr_cn_tieguanyin_001`，翻译的就是这条记录的文本 | 若翻译"新生成但未持久化的国内表达"，`source_expression_id` 指向的记录内容与实际翻译内容不符——真·契约破坏。seed 选择保住追溯诚实。接口文档 5.2「后端先读取国内表达作为翻译源文」据此成立。 |
+| **跨文化翻译源文 = 国内 seed 的 outputs**，不是新生成的 LLM 国内表达 | `source_expression_id` 指向 `expr_cn_szz_tgy_nx`，翻译的就是这条记录的文本 | 若翻译"新生成但未持久化的国内表达"，`source_expression_id` 指向的记录内容与实际翻译内容不符——真·契约破坏。seed 选择保住追溯诚实。接口文档 5.2「后端先读取国内表达作为翻译源文」据此成立。 |
 | **雷达图数值走 seed**，LLM 不生成 | `visual_data` 从 record 取 | 雷达是事实坐标，不该让 LLM 编。 |
 | **规则真正注入 prompt** | `select_rules → render_rules_for_prompt → prompt` | 激活死代码，满足 CLAUDE.md「筛选相关规则再注入 prompt」「规则不要硬编码进超长 prompt」。 |
 

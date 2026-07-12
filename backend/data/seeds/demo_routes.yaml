@@ -2,27 +2,7 @@
 # 两条链共享同一款茶的 tea_id，仅在 market / target_language / audience_reference 上不同
 
 demo_routes:
-  # ===== 赛珍珠铁观音（已有 + 新增） =====
-  - id: tieguanyin_domestic_poster
-    tea_id: tieguanyin_001
-    tea_name: 赛珍珠铁观音
-    market: domestic
-    target_language: zh
-    audience_reference: domestic_general
-    asset_type: poster
-    enabled: true
-    description: "铁观音面向国内消费者的中文图片物料 Demo 路径"
-
-  - id: tieguanyin_western_coffee_poster
-    tea_id: tieguanyin_001
-    tea_name: 赛珍珠铁观音
-    market: western
-    target_language: en
-    audience_reference: specialty_coffee_lovers
-    asset_type: poster
-    enabled: true
-    description: "铁观音面向欧美精品咖啡爱好者的英文图片物料 Demo 路径"
-
+  # ===== 赛珍珠铁观音 =====
   - id: szz_domestic_poster
     tea_id: BAMA_SZZ_TGY_NX
     tea_name: 赛珍珠浓香型安溪铁观音

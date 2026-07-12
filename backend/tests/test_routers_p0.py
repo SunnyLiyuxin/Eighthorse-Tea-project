@@ -23,10 +23,10 @@ def test_demo_routes(client):
         assert isinstance(r["enabled"], bool)
     # 主路径两条都在且 enabled
     route_ids = [r["id"] for r in routes]
-    assert "tieguanyin_domestic_poster" in route_ids
-    assert "tieguanyin_western_coffee_poster" in route_ids
+    assert "szz_domestic_poster" in route_ids
+    assert "szz_western_coffee_poster" in route_ids
     assert all(r["enabled"] for r in routes if r["id"] in {
-        "tieguanyin_domestic_poster", "tieguanyin_western_coffee_poster",
+        "szz_domestic_poster", "szz_western_coffee_poster",
     })
 
 

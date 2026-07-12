@@ -143,7 +143,7 @@ def catch_all_api(path: str, request: Request):
     """捕获所有未匹配的 /api/* 请求。
 
     本路由挂在 prefix="/api" 下，path 是去掉 "/api/" 后的部分
-    （如 "demo-routes/" 或 "teas/tieguanyin_001/knowledge/"）。
+    （如 "demo-routes/" 或 "teas/BAMA_SZZ_TGY_NX/knowledge/"）。
 
     include_in_schema=False：catch-all 不进 OpenAPI 文档。否则 5 个方法共用
     一个 path 会生成重复 operationId（catch_all_api_api__path__get），既违反

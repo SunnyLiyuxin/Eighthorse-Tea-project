@@ -72,7 +72,7 @@ def test_cross_cultural_llm_failure_degrades(client, monkeypatch):
     assert body["meta"]["llm_fallback_reason"] == "gateway_error"
     assert body["meta"]["fallback"] is False
     # source_expression_id 仍指向国内 seed（降级不改追溯诚实）
-    assert body["data"]["source_expression_id"] == "expr_cn_tieguanyin_001"
+    assert body["data"]["source_expression_id"] == "expr_cn_szz_tgy_nx"
 
 
 def test_asset_llm_failure_keeps_radar_from_seed(client, monkeypatch):

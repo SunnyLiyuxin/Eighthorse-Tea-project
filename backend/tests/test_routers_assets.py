@@ -33,9 +33,9 @@ def test_domestic_asset(client):
     # image_generation_enabled 在 meta 上（responses.success 摊进 meta）
     assert body["meta"]["image_generation_enabled"] is False
     # 国内物料纵向上一级 = 国内表达
-    assert d["source_expression_id"] == "expr_cn_tieguanyin_001"
+    assert d["source_expression_id"] == "expr_cn_szz_tgy_nx"
     assert d.get("source_translation_id") is None
-    assert d["trace_id"] == "asset_tieguanyin_poster_zh_001"
+    assert d["trace_id"] == "asset_szz_poster_zh"
 
     meta = body["meta"]
     assert meta["llm_generated"] is False
@@ -54,7 +54,7 @@ def test_cross_cultural_asset(client):
         assert isinstance(d["copy"].get(k), str) and d["copy"][k]
     _check_radar(d["visual_data"]["radar"])
     # 跨文化物料纵向上一级 = 跨文化表达
-    assert d["source_translation_id"] == "expr_en_tieguanyin_coffee_001"
+    assert d["source_translation_id"] == "expr_en_szz_tgy_nx_coffee"
     assert d.get("source_expression_id") is None
 
 

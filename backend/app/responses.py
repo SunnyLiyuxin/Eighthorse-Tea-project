@@ -26,7 +26,7 @@ def fallback_response(
     *,
     title: str = "功能暂未开放",
     message: str = "该能力已在产品规划中，Demo 阶段暂不提供真实生成结果。",
-    available_route_id: str = "tieguanyin_western_coffee_poster",
+    available_route_id: str = "szz_western_coffee_poster",
     suggested_action: str | None = None,
     fallback_reason: str = "feature_not_available",
 ) -> dict:

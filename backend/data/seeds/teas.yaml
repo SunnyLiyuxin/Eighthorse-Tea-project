@@ -2,19 +2,6 @@
 # Demo 阶段：三大明星系列（赛珍珠 / 牛一 / 鼎红）
 # tea_id 使用品牌系列缩写：SZZ=赛珍珠, NY=牛一, DH=鼎红
 teas:
-  - id: tieguanyin_001
-    name: 赛珍珠铁观音
-    category: 乌龙茶
-    origin: 福建安溪
-    brand: 八马茶业
-    demo_available: true
-    series: 赛珍珠
-    tea_class: 乌龙茶/青茶
-    product_archetype: 浓香型安溪铁观音
-    demo_sku: "赛珍珠11111，特级浓香型，75g"
-    shelf_life_months: 24
-    standard: "GB/T 19598-2025《地理标志产品质量要求 安溪铁观音》"
-
   - id: BAMA_SZZ_TGY_NX
     name: 赛珍珠浓香型安溪铁观音
     category: 乌龙茶

@@ -4,25 +4,6 @@
 
 tea_knowledge:
   # ===== 赛珍珠铁观音 =====
-  - tea_id: tieguanyin_001
-    origin:
-      region: 福建安溪铁观音地理标志产品范围
-      terroir: "山地丘陵、云雾充足、昼夜温差较明显，适宜乌龙茶香气形成"
-      source_note: "八马生态高山茶园；具体山场应以包装确认为准"
-    process:
-      name: 铁观音传统制作工艺（浓香型）
-      steps: ["晒青", "凉青", "摇青", "杀青", "揉捻", "焙火"]
-      key_technique: "看青做青、摇青与焙火控制；浓香型经后续焙火形成炒米香与醇厚感"
-      brand_claim: "非遗技艺，国家级非遗代表性传承人王文礼监制"
-    story:
-      title: 铁观音非遗制茶技艺
-      content: "铁观音制作技艺强调经验判断与工艺控制，是中国乌龙茶的重要代表。品牌概括'百年传承，浓香经典'。"
-      cultural_core: "音韵是铁观音品种、地域、工艺与滋味综合形成的整体感受，不能归因于单一成分。"
-    evidence_ids:
-      - evidence_tea_flavor_wheel_2022
-      - evidence_gbt19598_2025
-      - evidence_wang_2023_oolong
-
   - tea_id: BAMA_SZZ_TGY_NX
     origin:
       region: 福建安溪铁观音地理标志产品范围
