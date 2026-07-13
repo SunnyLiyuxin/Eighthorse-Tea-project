@@ -8,6 +8,14 @@
 - 失败永不抛：未启用 / 网络 / 超时 / 解析失败统一返回降级状态，由路由层走 fallback。
   生图无 seed 兜底（没有预置图），与文本三接口"退回 seed"不同。
 
+prompt 富化：marketing-asset.image_prompt 通常是一句话的精短描述（人读友好、
+确定），直接喂 CogView 易出图虚。本服务在发图前套一段确定性质量后缀（光照 /
+构图 / 镜头 / 画质 / 负面词），不加 LLM 调用、零幻觉、确定性——marketing-asset
+契约的 image_prompt 字段仍保持精短，富化只在生图内部发生，对前端透明。
+
+quality（hd/standard）走 openai SDK 的 quality 参数；watermark_enabled=false
+是智谱扩展参数、SDK 不暴露，经 extra_body 透传。
+
 返回 (result | None, status)：
   status ∈ "ok" / "disabled" / "network_error" / "timeout"
          / "parse_error" / "gateway_error"
@@ -15,7 +23,8 @@
 
 缓存（镜像 intent_service）：按 prompt + size 算 input_hash，命中且 created_at
 ≤29 天（智谱图片临时链接 30 天有效）即复用、跳过 CogView 调用；否则调 CogView、
-成功后写回。缓存命中仍标 success（对前端透明）。
+成功后写回。缓存命中仍标 success（对前端透明）。注意：富化后缀不计入缓存键——
+固定后缀不产生新维度，避免同一精短 prompt 因后缀微调产生多份缓存。
 """
 
 import logging
@@ -44,6 +53,16 @@ FALLBACK_TIMEOUT = "timeout"
 FALLBACK_PARSE = "parse_error"
 FALLBACK_GATEWAY = "gateway_error"
 
+# 确定性质量后缀：富化 CogView 出图，加在用户 prompt 之后。
+# 不依赖 LLM、零幻觉、确定性。含正向画质词 + 负面词（避免常见翻车）。
+# quality / watermark_enabled 走请求体参数，不在此串里。
+_QUALITY_SUFFIX = (
+    ". Professional commercial product photography, soft natural lighting, "
+    "shallow depth of field, sharp focus on the subject, elegant composition, "
+    "high detail, 8k, photorealistic. "
+    "No text, no watermark, no logo, no distorted proportions, no extra objects."
+)
+
 
 def _client() -> OpenAI:
     """构造 OpenAI 兼容 client（指向配置的 IMAGE_BASE_URL）。"""
@@ -57,11 +76,26 @@ def _client() -> OpenAI:
     )
 
 
+def _enrich_prompt(prompt: str) -> str:
+    """给精短 prompt 套确定性质量后缀（光照/构图/画质/负面词）。
+
+    marketing-asset.image_prompt 是一句话精短描述（人读友好），直接喂 CogView
+    出图细节不足。本函数加固定后缀富化，零 LLM、零幻觉。
+    """
+    prompt = (prompt or "").strip()
+    if not prompt:
+        return prompt
+    # 去掉末尾句号再补后缀，避免双句号
+    if prompt.endswith(("。", ".")):
+        prompt = prompt[:-1]
+    return prompt + _QUALITY_SUFFIX
+
+
 def generate_image(*, prompt: str, size: str | None = None) -> tuple[dict | None, str]:
     """调 CogView-4 生图。
 
     Args:
-        prompt: 图片生成 prompt（通常来自 marketing-asset.image_prompt）
+        prompt: 图片生成 prompt（通常来自 marketing-asset.image_prompt，精短）
         size: 输出尺寸，空则用配置默认 image_size
 
     Returns:
@@ -73,8 +107,10 @@ def generate_image(*, prompt: str, size: str | None = None) -> tuple[dict | None
         return None, FALLBACK_DISABLED
 
     used_size = size or s.image_size
+    enriched_prompt = _enrich_prompt(prompt)
 
     # 先查缓存：命中且未过期即复用，跳过 CogView 调用。
+    # 缓存键用原始 prompt + size（富化后缀固定，不计入键——后缀微调不产生新维度）。
     input_hash = output_store.compute_input_hash(ImageResult, prompt, used_size)
     cached = output_store.get_cached(input_hash)
     if cached is not None and _cache_fresh(cached):
@@ -83,9 +119,12 @@ def generate_image(*, prompt: str, size: str | None = None) -> tuple[dict | None
     try:
         resp = _client().images.generate(
             model=s.image_model,
-            prompt=prompt,
+            prompt=enriched_prompt,
             n=1,
             size=used_size,
+            quality=s.image_quality,
+            # watermark_enabled 是智谱扩展参数，SDK 不暴露，经 extra_body 透传
+            extra_body={"watermark_enabled": False},
         )
     except APITimeoutError:
         logger.warning("生图超时 model=%s timeout=%s", s.image_model, s.image_timeout)
@@ -131,7 +170,8 @@ def generate_image(*, prompt: str, size: str | None = None) -> tuple[dict | None
         input_hash=input_hash,
         content=content,
     )
-    logger.info("生图成功 model=%s size=%s prompt_chars=%d", s.image_model, used_size, len(prompt))
+    logger.info("生图成功 model=%s size=%s quality=%s prompt_chars=%d",
+                s.image_model, used_size, s.image_quality, len(enriched_prompt))
     return _build_result(content, s.image_model, used_size), "ok"
 
 
@@ -159,3 +199,5 @@ def _build_result(content: dict, model: str, size: str) -> dict:
         "model": content.get("model") or model,
         "size": content.get("size") or size,
     }
+
+

@@ -79,12 +79,34 @@ def test_generate_image_success(monkeypatch):
     assert result["url"] == "https://example.com/ok.png"
     assert result["model"] == "cogview-4"
     assert result["size"] == "1024x1024"
-    # 调用参数含 model/prompt/n/size
-    assert calls[0]["model"] == "cogview-4"
-    assert calls[0]["prompt"] == "赛珍珠铁观音海报"
-    assert calls[0]["n"] == 1
+    # 调用参数含 model/prompt/n/size/quality + extra_body(watermark)
+    sent = calls[0]
+    assert sent["model"] == "cogview-4"
+    assert sent["n"] == 1
+    assert sent["quality"] == "hd"
+    assert sent["extra_body"] == {"watermark_enabled": False}
+    # prompt 被富化：原"赛珍珠铁观音海报"+质量后缀，必须含 "professional"
+    assert "赛珍珠铁观音海报" in sent["prompt"]
+    assert "Professional commercial product photography" in sent["prompt"]
+    assert "No text, no watermark" in sent["prompt"]
     # 写了一条缓存
     assert output_store.count_rows() == 1
+
+
+def test_enrich_prompt_deterministic():
+    """富化是纯函数、确定性：同输入两次结果一致；空 prompt 原样返回。"""
+    a = image_service._enrich_prompt("茶海报")
+    b = image_service._enrich_prompt("茶海报")
+    assert a == b, "同 prompt 富化结果应一致"
+    # 含质量后缀关键词
+    assert "Professional commercial product photography" in a
+    assert "No text, no watermark" in a
+    # 去末尾句号后补后缀，避免双句号
+    assert image_service._enrich_prompt("海报。") == image_service._enrich_prompt("海报")
+    assert image_service._enrich_prompt("Poster.") == image_service._enrich_prompt("Poster")
+    # 空 prompt 原样返回（不拼后缀）
+    assert image_service._enrich_prompt("") == ""
+    assert image_service._enrich_prompt("   ") == ""
 
 
 # ---------------------------------------------------------------------------

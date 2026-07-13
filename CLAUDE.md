@@ -14,7 +14,7 @@
 
 三个生成接口（国内表达 / 跨文化表达 / 营销物料）已接入 LLM（OpenAI 兼容 SDK，默认指向 GLM，经 `backend/.env` 配置）。LLM 负责文本字段生成，ID / trace / source / 雷达数值仍由 seed 提供；未配置 key 或调用失败时透明退回 seed 预置表达（mock 兜底），不白屏。
 
-真实生图已接入：`POST /api/image/generate` 调智谱 CogView-4，返回临时图片 URL（30 天有效，同 prompt+size 按 input_hash 缓存 29 天）。与 `marketing-asset` 两步联调——物料层只产 `image_prompt`，生图拆为独立接口（解耦耗时）。生图凭证独立走 `IMAGE_*`（`backend/.env`），与 `LLM_*` 相互独立、不回退——当前 `LLM_*` 多半指向 DeepSeek，不覆盖智谱 `/images/generations`，故生图必须独立配 `IMAGE_*` 指向智谱。未配置 / 失败走 fallback（生图无 seed 兜底）。视频生成仍为 P2 占位。
+真实生图已接入：`POST /api/image/generate` 调智谱 CogView-4（`quality=hd` + 关闭水印），返回临时图片 URL（30 天有效，同 prompt+size 按 input_hash 缓存 29 天）。与 `marketing-asset` 两步联调——物料层只产 `image_prompt`，生图拆为独立接口（解耦耗时）。生图时后端给精短 prompt 套确定性质量后缀（专业商品摄影 / 光照 / 构图 / 负面词），不调 LLM、零幻觉、确定性；`marketing-asset.image_prompt` 字段仍保持精短。生图凭证独立走 `IMAGE_*`（`backend/.env`），与 `LLM_*` 相互独立、不回退——当前 `LLM_*` 多半指向 DeepSeek，不覆盖智谱 `/images/generations`，故生图必须独立配 `IMAGE_*` 指向智谱。未配置 / 失败走 fallback（生图无 seed 兜底）。视频生成仍为 P2 占位。
 
 不要默认扩展到多茶品、其他市场、其他受众参照系或真实视频生成。未开放能力应返回 fallback。
 

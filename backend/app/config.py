@@ -34,7 +34,8 @@ class Settings(BaseSettings):
     image_base_url: str = ""
     image_model: str = "cogview-4"
     image_size: str = "1024x1024"
-    image_timeout: float = 60.0  # 生图比文本慢，给 60s
+    image_quality: str = "hd"  # hd（精细~20s）/ standard（快速~5-10s）
+    image_timeout: float = 90.0  # hd 档较慢，给 90s
 
     @property
     def llm_enabled(self) -> bool:
