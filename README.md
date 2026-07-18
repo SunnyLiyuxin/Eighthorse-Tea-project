@@ -40,7 +40,7 @@ python -m pytest -v
 
 环境要求：Docker Desktop / Docker Engine + Docker Compose。
 
-两个服务：`backend`（FastAPI:8000，构建时自动跑 `seed.py --reset` 灌表）+ `frontend`（nginx:8080，serve `frontend/` 静态 + 反代 `/api` 到 backend）。云服务器只需暴露 8080：浏览器访问 8080 拿前端页面，页面同源调 `/api`，无跨域、无需 CORS。
+两个服务：`backend`（FastAPI:8000，构建时自动跑 `seed.py --reset` 灌表）+ `frontend`（nginx:8080，serve `frontend/` 静态 + 反代 `/api` 到 backend）。云服务器只需暴露 8080：浏览器访问 8080 拿前端页面，页面经 `frontend/api.js` 同源调 `/api`，无跨域、无需 CORS。
 
 ```bash
 docker compose up -d --build        # 构建并拉起 backend + frontend
@@ -51,7 +51,7 @@ docker compose down                 # 停止
 启动后访问：
 
 ```text
-http://localhost:8080          # 前端桌面原型 desktop-v2（移动端 mobile-v2）
+http://localhost:8080          # 前端桌面原型 desktop-v2（移动端 mobile-v2，经 api.js 对接后端）
 http://localhost:8080/docs      # 后端 Swagger（经 nginx 反代）
 http://localhost:8000/docs      # 直连后端（也可，CORS 已放开）
 ```

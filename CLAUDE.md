@@ -19,7 +19,8 @@
 - LLM 调用边界与降级 → `§9`；fallback 设计 → `§10`；API 分层 → `§11`；可追溯机制 → `§12`
 - API 字段 / 请求响应 / 优先级 / fallback 接口 → `docs/接口文档.md`（§5 表达含 hint 映射、§6.2 生图、§7 追溯、§8 fallback、§10 优先级）
 - 前端中文枚举 → 后端内部值映射 → `backend/app/enum_map.py`（映射表单一真源）
-- Docker 一体化部署 → `docker-compose.yml` + `deploy/nginx.conf`（backend:8000 + frontend nginx:8080 反代）
+- 前端 v2 对接层 → `frontend/api.js`（`BAMA_API` 封装所有后端调用，茶名须用后端全名对齐 `/api/teas`；两个已知缺口见「实现进度」第 9 项）
+- Docker 一体化部署 → `docker-compose.yml` + `deploy/nginx.conf`（backend:8000 + frontend nginx:8080 反代，index 已切 `desktop-v2.html`）
 - CI/CD → `.github/workflows/deploy.yml` + `scripts/deploy-remote.sh`（推 main 即 SSH 部署到云服务器 8080；密钥经仓库 Secret `SSH_HOST` / `SSH_PRIVATE_KEY` 注入）
 - 赛题理解 / 风味轮研究 / 跨文化类比依据 → `docs/系统架构.md`
 
@@ -27,7 +28,7 @@
 
 ## 项目状态
 
-可运行一体化 Demo（后端 FastAPI + 前端静态原型 + Docker 部署），项目名已确定：中文「八马茶语」/ 英文「ChaYu-BAMA」。主路径与当前进度见 README「文档」与下「实现进度」；四层架构、数据流、生图、降级、fallback 等设计细节见技术架构 / 接口文档，本文件不重复。未开放能力返回 fallback；不默认扩展到其他市场 / 其他受众 / 真实视频。
+可运行一体化 Demo（后端 FastAPI + 前端 v2 纯后端对接版 + Docker 部署），项目名已确定：中文「八马茶语」/ 英文「ChaYu-BAMA」。主路径与当前进度见 README「文档」与下「实现进度」；四层架构、数据流、生图、降级、fallback 等设计细节见技术架构 / 接口文档，本文件不重复。未开放能力返回 fallback；不默认扩展到其他市场 / 其他受众 / 真实视频。
 
 ## 协作约束（代码不可推断的红线，必守）
 
@@ -49,7 +50,7 @@
 
 ## 实现进度
 
-已完成：FastAPI 路由 / SQLAlchemy models（16 表）/ `seed.py --reset` / 读路径切库 / LLM service + Prompt + JSON 校验 / 真实生图（豆包 Seedream）/ output_store 缓存 / pytest 覆盖（164 passed）/ 前后端枚举映射（`app/enum_map.py`：platform/style/tone/length/content_theme/task_type/flavor_reference）/ 前端静态原型（`frontend/`）/ Docker 一体化部署（`docker-compose.yml` backend + frontend nginx 网关，已构建验证全链路）/ GitHub Actions 自动部署（`.github/workflows/deploy.yml` + `scripts/deploy-remote.sh`，推 main 即部署到云服务器 8080，密钥经仓库 Secret 注入）。
+已完成：FastAPI 路由 / SQLAlchemy models（16 表）/ `seed.py --reset` / 读路径切库 / LLM service + Prompt + JSON 校验 / 真实生图（豆包 Seedream）/ output_store 缓存 / pytest 覆盖（164 passed）/ 前后端枚举映射（`app/enum_map.py`：platform/style/tone/length/content_theme/task_type/flavor_reference）/ 前端 v2 纯后端对接版（`frontend/desktop-v2.html` + `mobile-v2.html` + `api.js`，已取代 v1 mock 原型）/ Docker 一体化部署（`docker-compose.yml` backend + frontend nginx 网关，已构建验证全链路）/ GitHub Actions 自动部署（`.github/workflows/deploy.yml` + `scripts/deploy-remote.sh`，推 main 即部署到云服务器 8080，密钥经仓库 Secret 注入）。
 
 后续优先顺序：
 
@@ -61,7 +62,7 @@
 6. ~~修生图出图质量——清商务信号词 + style 风格维度 + scene 镜头维度，seed 退化为纯画面物体。~~ ✅
 7. ~~图源切豆包 Seedream + 图内渲染中文知识文字。~~ ✅（详见接口文档 §6.2）
 8. ~~前端枚举映射 + Docker 一体化部署。~~ ✅（enum_map 统一前端中文枚举→后端英文内部值；nginx 反代 `/api`，前端同源调无跨域）
-9. 增加测试覆盖与前端联调。（测试覆盖已完成，前端联调待办）
+9. ~~增加测试覆盖与前端联调。~~ ✅（测试 164 passed；前端 v2 已切纯后端对接 `api.js`，茶名对齐后端全名、枚举经 `enum_map` 映射；剩余两项待办：①`api.js` `BASE` 写死 `localhost:8000`，Docker/nginx 同源需改相对路径 `""`；②v2 暂未读响应 `meta.fallback`，遇 fallback 显示空内容）
 10. 按部署环境收紧 CORS、文档入口和密钥配置。
 11. ~~GitHub Actions 自动部署到云服务器（8080）。~~ ✅（`.github/workflows/deploy.yml` + `scripts/deploy-remote.sh`；密钥经仓库 Secret 注入）
 
