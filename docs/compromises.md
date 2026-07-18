@@ -21,3 +21,22 @@
 **恢复条件**：前端若引入真正的自由文本输入框（用户能敲任意一句话），即可重新启用 NL 入口——代码可直接复活，无需重写。**待与前端团队确认**（计划 2026-07 与前端对齐前端输入框的最终形态）。
 
 **相关**：`docs/接口文档.md §5.3`（端点契约）、§1.4 `nl` meta、§10 P1 优先级、`backend/app/services/intent_service.py`。
+
+---
+
+## [搁置] 追溯链阶段状态机（status / duration_ms）
+
+**日期**：2026-07-19
+
+**What**：前端 `renderTraceChain`（`desktop-v2.html` / `mobile-v2.html`）为追溯链节点预留了状态机——`status`（completed / active / failed / pending）+ `duration_ms`（每层耗时），对应四种图标（✓ / ● / ! / ○）。后端 `GET /api/trace/{output_id}` 当前只返回 `trace:[{level,name,id,summary}]`，**不含 `status` 与 `duration_ms`**。
+
+**Why**：追溯链当前定位是「展示静态的纵向依据链」（知识依据→风味坐标→表达→物料），节点都是已完成的追溯，不存在「进行中 / 失败」语义；Demo 阶段也无每层耗时埋点。前端为兼容 `pipeline_stages` 格式留了状态机分支，但后端无该字段，走兼容分支后所有节点恒显示 `completed` 且无耗时——状态机分支不生效。
+
+**现状**：
+- 前端状态机代码保留（`mapTraceData` 兼容 `pipeline_stages` 与 `trace` 两种格式）。
+- 后端 `trace_service.build_trace` 只产 `{level,name,id,summary}`，不产 status / duration。
+- 链路展示正常（name + summary + 箭头），仅状态图标恒为 ✓、无耗时——不影响可用性，仅设计预留悬空。
+
+**恢复条件**：若需呈现「生成阶段实时进度 / 每层耗时」，需后端在 trace 响应补 `pipeline_stages`（含每层起止时间 + 状态），前端状态机即自动生效。当前不在 Demo 范围。
+
+**相关**：`docs/接口文档.md §7`（trace 响应字段现状注）、`backend/app/services/trace_service.py`、`frontend/{desktop,mobile}-v2.html` 的 `renderTraceChain` / `mapTraceData`。
