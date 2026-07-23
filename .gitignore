@@ -232,3 +232,5 @@ backend/data/*.db-journal
 .deploy_key
 .deploy_key.pub
 .github/workflows/.secrets*
+
+开题报告/
