@@ -285,6 +285,8 @@ header.topbar{position:relative;z-index:20;display:flex;align-items:center;justi
 .mat-card{overflow:hidden;border-radius:14px;border-top-left-radius:4px;border:1px solid rgba(184,147,90,.2);background:var(--paper);max-width:80%}
 .mat-img-wrap{position:relative;aspect-ratio:4/3;width:100%;min-width:200px;overflow:hidden;background:linear-gradient(135deg,#C2613B,#8B3D22)}
 .mat-img-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+.mat-img-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:rgba(245,239,227,.85);font-size:12px}
+.mat-img-fallback svg{width:32px;height:32px;color:rgba(245,239,227,.8)}
 .mat-badge{position:absolute;left:8px;top:8px;display:flex;align-items:center;gap:4px;border-radius:999px;background:rgba(194,97,59,.7);padding:3px 8px;font-size:10px;color:var(--paper);backdrop-filter:blur(4px)}
 .mat-badge svg{width:10px;height:10px}
 .mat-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px}
@@ -1044,9 +1046,12 @@ function buildTyping(){
 function buildMat(m){
   const isVid=m.payload&&m.payload.modality==="video";
   const ip=m.imagePrompt||"";
-  const imgSrc=ip.startsWith("http")?ip:`https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=${encodeURIComponent(ip||"tea")}&image_size=landscape_4_3`;
+  // 只接受后端返回的图片 URL（http 开头）。无 URL 时不再 fallback 到外部生图端点
+  // （旧代码硬编码 trae-api-cn.mchost.guru，既是死代码又违反"不接外部 API"红线）。
+  const hasImg=typeof ip==="string"&&ip.startsWith("http");
+  const imgEl=hasImg?`<img src="${ip}" loading="lazy"/>`:`<div class="mat-img-fallback">${svg("img")}<span>图片未生成</span></div>`;
   const n=h("div","mat-preview");
-  n.innerHTML=`<div class="av bot"><svg width="18" height="18" viewBox="0 0 64 64"><use href="#i-yu-leaf"/></svg></div><div class="msg-body"><span class="msg-name">茶语 · 茶业营销助手</span><div class="mat-card"><div class="mat-img-wrap"><img src="${imgSrc}" loading="lazy"/><div class="mat-badge">${svg(isVid?'vid':'img')}${isVid?'视频':'图片'}</div></div><div class="mat-foot"><div><div class="meta-t">生成完成</div><div class="meta-s">${m.payload?.platform||''} · ${m.payload?.style||''}</div></div><button class="mat-dl">下载</button></div></div></div>`;
+  n.innerHTML=`<div class="av bot"><svg width="18" height="18" viewBox="0 0 64 64"><use href="#i-yu-leaf"/></svg></div><div class="msg-body"><span class="msg-name">茶语 · 茶业营销助手</span><div class="mat-card"><div class="mat-img-wrap">${imgEl}<div class="mat-badge">${svg(isVid?'vid':'img')}${isVid?'视频':'图片'}</div></div><div class="mat-foot"><div><div class="meta-t">生成完成</div><div class="meta-s">${m.payload?.platform||''} · ${m.payload?.style||''}</div></div><button class="mat-dl">下载</button></div></div></div>`;
   return n;
 }
 function pushMsg(role,content,type,extra={}){

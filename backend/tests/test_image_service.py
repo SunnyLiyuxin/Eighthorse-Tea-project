@@ -202,7 +202,29 @@ def test_generate_image_unknown_style_falls_back(monkeypatch):
     assert "morning daylight" in calls[0]["prompt"], "未知 style 应用默认 fresh 片段"
 
 
-def test_generate_image_style_in_cache_key(monkeypatch):
+def test_generate_image_guofeng_style(monkeypatch):
+    """显式传 style=guofeng → 富化含国风片段，东方美学信号词进 prompt，且不混入 fresh/business 信号。"""
+    _patch_get_settings(monkeypatch, ENABLED_SETTINGS)
+    calls = []
+
+    class _FakeImages:
+        def generate(self, **kw):
+            calls.append(kw)
+            return _fake_images_response("https://example.com/gf.png")
+
+    monkeypatch.setattr(image_service, "_client", lambda: type("C", (), {"images": _FakeImages()})())
+    result, status = image_service.generate_image(prompt="铁观音国风海报", style="guofeng")
+    assert status == "ok"
+    assert result["style"] == "guofeng"
+    sent = calls[0]["prompt"]
+    # 国风片段关键词（传统东方美学 / 水墨配色 / 宣纸背景）
+    assert "classical Chinese aesthetic" in sent
+    assert "ink-painting" in sent
+    # 不应混入 fresh / business 的信号词（三套风格互斥）
+    assert "morning daylight" not in sent
+    assert "low-key studio lighting" not in sent
+    # 商务美学禁词同样不出现
+    assert "Professional commercial product photography" not in sent
     """同 prompt+size、不同 style → 不命中彼此缓存（style 进了哈希键）。"""
     _patch_get_settings(monkeypatch, ENABLED_SETTINGS)
 
@@ -253,6 +275,10 @@ def test_enrich_prompt_deterministic():
     # landscape / product 镜头片段关键词
     assert "wide establishing shot" in image_service._enrich_prompt("茶海报", "fresh", "landscape", None)
     assert "tea canister as the main subject" in image_service._enrich_prompt("茶海报", "fresh", "product", None)
+    # guofeng（国风）风格片段：传统东方美学信号，区别于 fresh / business
+    gf = image_service._enrich_prompt("茶海报", "guofeng", "closeup", None)
+    assert "classical Chinese aesthetic" in gf
+    assert "morning daylight" not in gf, "guofeng 不应混入 fresh 的光照信号"
     # 去末尾句号后补后缀，避免双句号
     assert image_service._enrich_prompt("海报。", "fresh", "closeup", None) == image_service._enrich_prompt("海报", "fresh", "closeup", None)
     assert image_service._enrich_prompt("Poster.", "fresh", "closeup", None) == image_service._enrich_prompt("Poster", "fresh", "closeup", None)

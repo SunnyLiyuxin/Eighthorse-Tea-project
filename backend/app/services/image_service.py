@@ -125,6 +125,12 @@ _STYLE_FRAGMENTS: dict[str, str] = {
         "palette, dark premium background with deep walnut wood and subtle gold "
         "accents, serious authoritative luxury commercial mood"
     ),
+    "guofeng": (
+        "classical Chinese aesthetic, traditional ink-painting-inspired muted "
+        "palette of celadon green, ink black and vermillion red, aged rice paper "
+        "texture background with pine and plum blossom motifs, soft warm lantern "
+        "glow, elegant oriental cultural mood"
+    ),
 }
 
 # 画质后缀：保留画质词，但去掉 CogView 时代的 "No text, no watermark"——

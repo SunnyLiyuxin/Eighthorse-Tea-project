@@ -157,10 +157,15 @@ const BAMA_API=(function(){
   async function imageGenerate(prompt, teaName, sel, routeId, edition){
     const teaId=getTeaId(teaName);
     const language=edition==="overseas"?(sel.language||"en"):"zh";
+    // 物料风格（年轻/商务/国风）→ 生图 style（fresh/business/guofeng）。
+    // 三者一一对应：国风不再被降级成 fresh（避免"国风海报"出图却是清新风光照）。
+    // 后端 _STYLE_FRAGMENTS 现已含 guofeng；未知值走 fresh 兜底（生图不白屏）。
+    const styleMap={"年轻":"fresh","商务":"business","国风":"guofeng"};
+    const style=styleMap[sel.style]||"fresh";
     const body={
       prompt: prompt,
       size: "1K",
-      style: sel.style==="商务"?"business":"fresh",
+      style,
       scene: "closeup",
       tea_id: teaId,
       language,
