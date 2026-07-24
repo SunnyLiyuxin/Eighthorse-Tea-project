@@ -243,9 +243,9 @@ input,textarea{font-family:inherit}
 .msg.error .msg-bubble::before{content:"⚠ 生成失败";display:block;font-size:11px;font-weight:700;letter-spacing:.05em;margin-bottom:4px;opacity:.85}
 .msg.fallback .msg-bubble{background:rgba(184,147,90,.08);border:1px dashed var(--gold);border-top-left-radius:4px;color:var(--goldD)}
 .msg.fallback .msg-bubble::before{content:"◇ 能力未开放";display:block;font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--goldD);margin-bottom:4px;opacity:.9}
-.msg.image .msg-bubble{padding:0;background:transparent;border:none;max-width:320px}
-.msg.image img{width:100%;border-radius:12px;border:1px solid rgba(184,147,90,.3);display:block}
-.msg.image .img-expired{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;width:100%;min-height:160px;border-radius:12px;border:1px dashed rgba(184,147,90,.5);background:rgba(184,147,90,.08);color:var(--goldD);font-size:13px}
+.msg.image .msg-bubble{padding:0;background:transparent;border:none;max-width:70%}
+.msg.image img{width:320px;max-width:100%;border-radius:12px;border:1px solid rgba(184,147,90,.3);display:block;margin:0 auto}
+.msg.image .img-expired{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;width:100%;max-width:320px;margin:0 auto;min-height:160px;border-radius:12px;border:1px dashed rgba(184,147,90,.5);background:rgba(184,147,90,.08);color:var(--goldD);font-size:13px}
 .msg.image .img-expired svg{width:30px;height:30px;color:var(--gold);opacity:.8}
 .msg.image .img-expired .hint{font-size:11px;color:rgba(184,147,90,.7)}
 .msg.image .caption{margin-top:8px;font-size:12px;color:rgba(212,115,79,.6);text-align:center}
